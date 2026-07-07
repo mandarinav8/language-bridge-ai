@@ -7,7 +7,7 @@ export default async function handler(request, response) {
 
   if (!apiKey) {
     return response.status(500).json({
-      error: "GEMINI_API_KEY가 아직 설정되지 않았어. Vercel 환경 변수에 API 키를 넣어야 해."
+      error: "GEMINI_API_KEY가 아직 설정되지 않았어."
     });
   }
 
@@ -17,21 +17,35 @@ export default async function handler(request, response) {
     return response.status(400).json({ error: "질문이 비어 있어." });
   }
 
-const today = new Date().toLocaleDateString('ko-KR', { timeZone: 'Asia/Seoul', year: 'numeric', month: 'long', day: 'numeric' });
+  const now = new Date();
+  const currentDateKorea = new Intl.DateTimeFormat("ko-KR", {
+    timeZone: "Asia/Seoul",
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+    weekday: "long"
+  }).format(now);
 
-const prompt = `
-[SYSTEM INSTRUCTION]
-오늘 날짜는 ${today}입니다. 모든 답변은 이 날짜를 기준으로 작성하세요. 절대 과거 날짜를 현재라고 대답하지 마십시오.
+  const prompt = `
+You are Language Bridge AI.
 
-너는 언어 번역 및 정보 검색 전담 비서야. 다음 규칙을 엄격하게 지켜.
-1. 사용자의 질문을 영어로 번역해서 "englishQuestion"에 넣는다.
-2. 영어로 번역된 질문을 바탕으로 최신 정보를 검색하고 답을 찾는다.
-3. 찾은 답을 아주 자연스러운 **한국어**로 번역해서 "finalAnswer"에 넣는다. 
-(경고: "finalAnswer"는 무조건 한국어로만 작성할 것!)
+Current date in Korea: ${currentDateKorea}.
+Use this date as authoritative for all date-related reasoning.
+Do not claim this date is impossible because of your training cutoff.
 
-Return your answer as strict JSON only.
+The user may write in any language.
+Your job is to:
+1. Detect the user's input language.
+2. Rewrite the user's question into clear, natural, precise English.
+3. Answer based on the English version of the question.
+4. Return the final answer in ${answerLanguage}.
+5. If the question depends on current facts, recent events, laws, prices, schedules, software versions, or market data, use Google Search grounding.
+6. Clearly say when something is uncertain.
+7. Explain English-language concepts that may be easy for a non-native English speaker to misunderstand.
+
+Return strict JSON only.
 Do not wrap it in markdown.
-Do not include extra commentary outside JSON.
+Do not include commentary outside JSON.
 
 JSON shape:
 {
@@ -45,25 +59,17 @@ ${question}
 
   try {
     const geminiResponse = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`,
+      "https://generativelanguage.googleapis.com/v1beta/interactions",
       {
         method: "POST",
         headers: {
-          "Content-Type": "application/json"
+          "Content-Type": "application/json",
+          "x-goog-api-key": apiKey
         },
         body: JSON.stringify({
-          contents: [
-            {
-              parts: [
-                {
-                  text: prompt
-                }
-              ]
-            }
-          ],
-          generationConfig: {
-            responseMimeType: "application/json"
-          }
+          model: "gemini-3.5-flash",
+          input: prompt,
+          tools: [{ type: "google_search" }]
         })
       }
     );
@@ -76,7 +82,7 @@ ${question}
       });
     }
 
-    const text = geminiData.candidates?.[0]?.content?.parts?.[0]?.text;
+    const text = geminiData.output_text;
 
     if (!text) {
       return response.status(502).json({
@@ -84,7 +90,13 @@ ${question}
       });
     }
 
-    const parsed = JSON.parse(text);
+    const cleaned = text
+      .replace(/^```json/i, "")
+      .replace(/^```/, "")
+      .replace(/```$/, "")
+      .trim();
+
+    const parsed = JSON.parse(cleaned);
 
     return response.status(200).json({
       englishQuestion: parsed.englishQuestion || "",
