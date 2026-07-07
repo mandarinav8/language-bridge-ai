@@ -68,8 +68,8 @@ ${question}
         },
         body: JSON.stringify({
           model: "gemini-3.5-flash",
-          input: prompt,
-          tools: [{ type: "google_search" }]
+          input: prompt
+         
         })
       }
     );
