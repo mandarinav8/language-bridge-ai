@@ -1,0 +1,168 @@
+:root {
+  color-scheme: light;
+  font-family: Inter, "Segoe UI", Arial, sans-serif;
+  background: #f4f7fb;
+  color: #172033;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background:
+    linear-gradient(135deg, rgba(40, 87, 179, 0.12), transparent 32%),
+    linear-gradient(315deg, rgba(10, 145, 116, 0.12), transparent 34%),
+    #f4f7fb;
+}
+
+.app {
+  width: min(1120px, calc(100% - 32px));
+  margin: 0 auto;
+  padding: 40px 0;
+  display: grid;
+  gap: 20px;
+}
+
+.panel,
+.result > div {
+  background: rgba(255, 255, 255, 0.94);
+  border: 1px solid #d9e3f0;
+  border-radius: 8px;
+  box-shadow: 0 18px 40px rgba(35, 48, 76, 0.08);
+}
+
+.panel {
+  padding: 28px;
+}
+
+.eyebrow {
+  margin: 0 0 8px;
+  color: #206c5f;
+  font-weight: 700;
+  letter-spacing: 0;
+}
+
+h1 {
+  margin: 0 0 24px;
+  max-width: 760px;
+  font-size: clamp(28px, 4vw, 46px);
+  line-height: 1.12;
+}
+
+h2 {
+  margin: 0;
+  padding: 18px 20px 0;
+  font-size: 18px;
+}
+
+label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 700;
+}
+
+textarea,
+select,
+button {
+  font: inherit;
+}
+
+textarea {
+  width: 100%;
+  min-height: 180px;
+  resize: vertical;
+  border: 1px solid #bac8d8;
+  border-radius: 8px;
+  padding: 16px;
+  line-height: 1.55;
+  background: #ffffff;
+  color: #172033;
+}
+
+textarea:focus,
+select:focus,
+button:focus {
+  outline: 3px solid rgba(32, 108, 95, 0.2);
+  outline-offset: 2px;
+}
+
+.controls {
+  margin-top: 14px;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+select {
+  min-height: 44px;
+  border: 1px solid #bac8d8;
+  border-radius: 8px;
+  padding: 0 12px;
+  background: #ffffff;
+}
+
+button {
+  min-height: 44px;
+  border: 0;
+  border-radius: 8px;
+  padding: 0 18px;
+  background: #206c5f;
+  color: #ffffff;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+button:disabled {
+  cursor: wait;
+  opacity: 0.65;
+}
+
+#status {
+  min-height: 24px;
+  margin: 14px 0 0;
+  color: #475569;
+}
+
+.result {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+pre {
+  margin: 0;
+  min-height: 220px;
+  padding: 18px 20px 22px;
+  white-space: pre-wrap;
+  word-break: keep-all;
+  overflow-wrap: anywhere;
+  line-height: 1.6;
+  font-family: inherit;
+  color: #243044;
+}
+
+@media (max-width: 760px) {
+  .app {
+    width: min(100% - 20px, 1120px);
+    padding: 20px 0;
+  }
+
+  .panel {
+    padding: 20px;
+  }
+
+  .controls,
+  .result {
+    grid-template-columns: 1fr;
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  select,
+  button {
+    width: 100%;
+  }
+}

@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Language Bridge AI</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <main class="app">
+    <section class="panel">
+      <div class="title-row">
+        <div>
+          <p class="eyebrow">Language Bridge AI</p>
+          <h1>내 언어로 묻고, 영어 기준으로 더 정확하게 답변받기</h1>
+        </div>
+      </div>
+
+      <label for="question">질문</label>
+      <textarea id="question" placeholder="한국어, 일본어, 중국어 등 원하는 언어로 질문해보세요."></textarea>
+
+      <div class="controls">
+        <select id="answerLanguage">
+          <option value="Korean">한국어로 답변</option>
+          <option value="English">영어로 답변</option>
+          <option value="Japanese">일본어로 답변</option>
+          <option value="Chinese">중국어로 답변</option>
+        </select>
+        <button id="askButton">질문하기</button>
+      </div>
+
+      <p id="status"></p>
+    </section>
+
+    <section class="result">
+      <div>
+        <h2>영어로 정리된 질문</h2>
+        <pre id="englishQuestion">아직 질문이 없습니다.</pre>
+      </div>
+
+      <div>
+        <h2>최종 답변</h2>
+        <pre id="finalAnswer">여기에 답변이 표시됩니다.</pre>
+      </div>
+    </section>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>
