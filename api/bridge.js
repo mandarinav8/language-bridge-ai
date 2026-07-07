@@ -104,12 +104,21 @@ ${question}
       .replace(/```$/, "")
       .trim();
 
-    const parsed = JSON.parse(cleaned);
+    let parsed;
 
-    return response.status(200).json({
-      englishQuestion: parsed.englishQuestion || "",
-      finalAnswer: parsed.finalAnswer || ""
-    });
+try {
+  parsed = JSON.parse(cleaned);
+} catch {
+  return response.status(200).json({
+    englishQuestion: "Gemini returned an answer, but it was not valid JSON.",
+    finalAnswer: cleaned
+  });
+}
+
+return response.status(200).json({
+  englishQuestion: parsed.englishQuestion || "",
+  finalAnswer: parsed.finalAnswer || ""
+});
   } catch (error) {
     return response.status(500).json({
       error: error.message || "서버에서 문제가 생겼어."
