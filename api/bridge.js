@@ -59,20 +59,28 @@ ${question}
 
   try {
     const geminiResponse = await fetch(
-      "https://generativelanguage.googleapis.com/v1beta/interactions",
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "x-goog-api-key": apiKey
-        },
-        body: JSON.stringify({
-          model: "gemini-3.5-flash",
-          input: prompt
-         
-        })
+  `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash:generateContent?key=${apiKey}`,
+  {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      contents: [
+        {
+          parts: [
+            {
+              text: prompt
+            }
+          ]
+        }
+      ],
+      generationConfig: {
+        responseMimeType: "application/json"
       }
-    );
+    })
+  }
+);
 
     const geminiData = await geminiResponse.json();
 
@@ -82,7 +90,7 @@ ${question}
       });
     }
 
-    const text = geminiData.output_text;
+    const text = geminiData.candidates?.[0]?.content?.parts?.[0]?.text;
 
     if (!text) {
       return response.status(502).json({
