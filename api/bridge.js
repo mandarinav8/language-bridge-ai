@@ -17,17 +17,10 @@ export default async function handler(request, response) {
     return response.status(400).json({ error: "질문이 비어 있어." });
   }
 
-  const prompt = `
-You are Language Bridge AI.
+const today = new Date().toLocaleDateString('en-US', { timeZone: 'Asia/Seoul' });
 
-The user may write in any language.
-Your job is to:
-1. Detect the user's input language.
-2. Rewrite the user's question into clear, natural, precise English.
-3. Answer based on the English version of the question.
-4. Return the final answer in ${answerLanguage}.
-5. Clearly say when something is uncertain.
-6. Explain any English-language concept that may be easy to misunderstand for a non-native English speaker.
+const prompt = `
+CRITICAL INSTRUCTION: The current date is ${today}. You must base all your answers on this current date. Never state that your knowledge is limited to 2023 or any past year.
 
 Return your answer as strict JSON only.
 Do not wrap it in markdown.
