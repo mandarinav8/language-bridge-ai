@@ -17,10 +17,17 @@ export default async function handler(request, response) {
     return response.status(400).json({ error: "질문이 비어 있어." });
   }
 
-const today = new Date().toLocaleDateString('en-US', { timeZone: 'Asia/Seoul' });
+const today = new Date().toLocaleDateString('ko-KR', { timeZone: 'Asia/Seoul', year: 'numeric', month: 'long', day: 'numeric' });
 
 const prompt = `
-CRITICAL INSTRUCTION: The current date is ${today}. You must base all your answers on this current date. Never state that your knowledge is limited to 2023 or any past year.
+[SYSTEM INSTRUCTION]
+오늘 날짜는 ${today}입니다. 모든 답변은 이 날짜를 기준으로 작성하세요. 절대 과거 날짜를 현재라고 대답하지 마십시오.
+
+너는 언어 번역 및 정보 검색 전담 비서야. 다음 규칙을 엄격하게 지켜.
+1. 사용자의 질문을 영어로 번역해서 "englishQuestion"에 넣는다.
+2. 영어로 번역된 질문을 바탕으로 최신 정보를 검색하고 답을 찾는다.
+3. 찾은 답을 아주 자연스러운 **한국어**로 번역해서 "finalAnswer"에 넣는다. 
+(경고: "finalAnswer"는 무조건 한국어로만 작성할 것!)
 
 Return your answer as strict JSON only.
 Do not wrap it in markdown.
